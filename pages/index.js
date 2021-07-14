@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import factory from '../ethereum/factory';
 import { Card, Button } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
+import factory from '../ethereum/factory';
+import Layout from '../components/Layout';
 
 class CampaignIndex extends Component {
   // Used only by Next.js
@@ -24,12 +25,19 @@ class CampaignIndex extends Component {
   }
 
   render() {
-    // return <div>{this.props.campaigns[0]}</div>;
     return (
-      <div>
-        {this.renderCampaigns()}
-        <Button content='Create Campaign' icon='add circle' labelPosition='left' primary/>
-      </div>
+      <Layout>
+        <div>
+          <h3>Open Campaigns</h3>
+          {this.renderCampaigns()}
+          <Button
+            content='Create Campaign'
+            icon='add circle'
+            labelPosition='left'
+            primary
+          />
+        </div>
+      </Layout>
     );
   }
 }
