@@ -12,7 +12,7 @@ class CampaignNew extends Component {
 
     const accounts = await web3.eth.getAccounts()
 
-    await factory.createCampaign(this.state.minimumContribution).send({
+    await factory.methods.createCampaign(this.state.minimumContribution).send({
       from: accounts[0]
     })
   }
