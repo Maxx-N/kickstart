@@ -9,8 +9,13 @@ class CampaignShow extends Component {
 
     const summary = await campaign.methods.getSummary().call();
 
-    console.log(summary);
-    return {};
+    return {
+      minimumContribution: summary[0],
+      balance: summary[1],
+      requestsNumber: summary[2],
+      approverCount: summary[3],
+      managerAddress: summary[4],
+    };
   }
 
   render() {
