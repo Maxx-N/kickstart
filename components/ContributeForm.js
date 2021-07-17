@@ -27,12 +27,12 @@ class ContributeForm extends Component {
       this.setState({ errorMessage: err.message });
     }
 
-    this.setState({ loading: false });
+    this.setState({ loading: false, value: '' });
   };
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
         <Form.Field>
           <label>Contribute to this campaign!</label>
           <Input
