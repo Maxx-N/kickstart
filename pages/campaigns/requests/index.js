@@ -5,7 +5,7 @@ import Layout from '../../../components/Layout';
 
 class RequestIndex extends Component {
   static async getInitialProps(props) {
-    const { address } = this.props;
+    const { address } = props;
     
     return { address };
   }
