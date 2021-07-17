@@ -4,26 +4,29 @@ import Campaign from '../ethereum/campaign';
 import web3 from '../ethereum/web3';
 
 class ContributeForm extends Component {
-  state = { value: '', loading: false };
+  state = { value: '', loading: false, errorMessage: '' };
 
   onSubmit = async (event) => {
     event.preventDefault();
 
-    this.setState({ loading: true });
+    this.setState({ loading: true, errorMessage: '' });
 
     const campaign = Campaign(this.props.address);
 
-    const weiAmount = web3.utils.toWei(this.state.value, 'ether');
+    try {
+      const accounts = await web3.eth.getAccounts();
 
-    const accounts = await web3.eth.getAccounts();
+      await campaign.methods
+        .contribute()
+        .send({
+          from: accounts[0],
+          value: web3.utils.toWei(this.state.value, 'ether'),
+        });
+    } catch (err) {
+      this.setState({ errorMessage: err.message });
+    }
 
-    console.log(accounts[0]);
-
-    // await campaign.methods
-    //   .contribute()
-    //   .send({ from: accounts[0], gas: weiAmount });
-
-    // this.setState({ loading: false });
+    this.setState({ loading: false });
   };
 
   render() {
@@ -40,6 +43,7 @@ class ContributeForm extends Component {
             labelPosition='right'
           />
         </Form.Field>
+        <Message error header='Oops!' content={this.state.errorMessage} />
         <Button primary loading={this.state.loading}>
           Contribute!
         </Button>
