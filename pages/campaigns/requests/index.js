@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Table } from 'semantic-ui-react';
 import { Link } from '../../../routes';
 import Layout from '../../../components/Layout';
 import Campaign from '../../../ethereum/campaign';
@@ -12,21 +12,36 @@ class RequestIndex extends Component {
     const requestsCount = await campaign.methods.getRequestsCount().call();
 
     const requests = await Promise.all(
-      Array(requestsCount)
+      Array(parseInt(requestsCount))
         .fill()
         .map((element, index) => {
           return campaign.methods.requests(index).call();
         })
     );
 
-
     return { address, requests, requestsCount };
   }
 
   render() {
+    const { Header, Row, HeaderCell, Body } = Table;
     return (
       <Layout>
         <h3>Requests</h3>
+
+        <Table>
+          <Header>
+            <Row>
+              <HeaderCell>ID</HeaderCell>
+              <HeaderCell>Description</HeaderCell>
+              <HeaderCell>Amount</HeaderCell>
+              <HeaderCell>Recipient</HeaderCell>
+              <HeaderCell>Approval Count</HeaderCell>
+              <HeaderCell>Approve</HeaderCell>
+              <HeaderCell>Finalize</HeaderCell>
+            </Row>
+          </Header>
+        </Table>
+
         <Link route={`/campaigns/${this.props.address}/requests/new`}>
           <a>
             <Button primary> Add Request</Button>
