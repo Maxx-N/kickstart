@@ -34,19 +34,22 @@ class RequestRow extends Component {
         .finalizeRequest(this.props.id)
         .send({ from: accounts[0] });
 
-      // Router.replaceRoute(`/campaigns/${this.props.address}/requests`);
-    } catch (err) {}
+      Router.replaceRoute(`/campaigns/${this.props.address}/requests`);
+    } catch (err) {
+    }
 
     this.setState({ loadingFinalize: false });
   };
 
   render() {
     const { Row, Cell } = Table;
-    const { description, value, recipient, approvalCount } = this.props.request;
+    const { description, value, recipient, approvalCount, complete } =
+      this.props.request;
     const { id, approversCount } = this.props;
+    const readyToFinalize = approvalCount > approversCount / 2;
 
     return (
-      <Row>
+      <Row disabled={complete} positive={readyToFinalize && !complete}>
         <Cell>{id}</Cell>
         <Cell>{description}</Cell>
         <Cell>{web3.utils.fromWei(value, 'ether')}</Cell>
@@ -55,24 +58,28 @@ class RequestRow extends Component {
           {approvalCount}/{approversCount}
         </Cell>
         <Cell>
-          <Button
-            loading={this.state.loadingApprove}
-            color='green'
-            basic
-            onClick={this.onApprove}
-          >
-            Approve
-          </Button>
+          {complete ? null : (
+            <Button
+              loading={this.state.loadingApprove}
+              color='green'
+              basic
+              onClick={this.onApprove}
+            >
+              Approve
+            </Button>
+          )}
         </Cell>
         <Cell>
-          <Button
-            loading={this.state.loadingFinalize}
-            color='teal'
-            basic
-            onClick={this.onFinalize}
-          >
-            Finalize
-          </Button>
+          {complete || !readyToFinalize ? null : (
+            <Button
+              loading={this.state.loadingFinalize}
+              color='teal'
+              basic
+              onClick={this.onFinalize}
+            >
+              Finalize
+            </Button>
+          )}
         </Cell>
       </Row>
     );
