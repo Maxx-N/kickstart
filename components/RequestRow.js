@@ -4,10 +4,10 @@ import web3 from '../ethereum/web3';
 import Campaign from '../ethereum/campaign';
 
 class RequestRow extends Component {
-  state = { loading: false };
+  state = { loadingApprove: false, loadingFinalize: false };
 
   onApprove = async () => {
-    this.setState({ loading: true });
+    this.setState({ loadingApprove: true });
 
     const campaign = Campaign(this.props.address);
 
@@ -18,7 +18,22 @@ class RequestRow extends Component {
         .send({ from: accounts[0] });
     } catch (err) {}
 
-    this.setState({ loading: false });
+    this.setState({ loadingApprove: false });
+  };
+
+  onFinalize = async () => {
+    this.setState({ loadingFinalize: true });
+
+    const campaign = Campaign(this.props.address);
+
+    try {
+      const accounts = await web3.eth.getAccounts();
+      await campaign.methods
+        .finalizeRequest(this.props.id)
+        .send({ from: accounts[0] });
+    } catch (err) {}
+
+    this.setState({ loadingFinalize: false });
   };
 
   render() {
@@ -37,7 +52,7 @@ class RequestRow extends Component {
         </Cell>
         <Cell>
           <Button
-            loading={this.state.loading}
+            loading={this.state.loadingApprove}
             color='green'
             basic
             onClick={this.onApprove}
@@ -45,7 +60,16 @@ class RequestRow extends Component {
             Approve
           </Button>
         </Cell>
-        <Cell>Finalize</Cell>
+        <Cell>
+          <Button
+            loading={this.state.loadingFinalize}
+            color='teal'
+            basic
+            onClick={this.onFinalize}
+          >
+            Finalize
+          </Button>
+        </Cell>
       </Row>
     );
   }
